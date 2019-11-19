@@ -25,7 +25,7 @@ function setMembers() {
 	const members = activeRoom.users.map(user => ({
 		username: user.id,
 		name: user.name,
-		presence: user.presence.state
+		presence: user.presence.state,
 	}));
 	store.commit('setUsers', members);
 }
@@ -41,25 +41,45 @@ async function subscribeToRoom(roomId) {
 					name: message.sender.name,
 					username: message.sender.senderId,
 					text: message.text,
-					date: moment(message.createdAt).format("h:mm:ss a D-MM-YYYY")
+					date: moment(message.createdAt).format(
+						'hh:mm:ss a DD-MM-YYYY'
+					),
 				});
 			},
 			onPresenceChanged: () => {
 				setMembers();
 			},
 			onUserStartedTyping: user => {
-				store.commit('setUserTyping', user.id)
+				store.commit('setUserTyping', user.id);
 			},
 			onUserStoppedTyping: () => {
-				store.commit('setUserTyping', null)
-			}
-		}
+				store.commit('setUserTyping', null);
+			},
+		},
 	});
 	setMembers();
 	return activeRoom;
 }
 
+async function sendMessage(text) {
+	const messageId = await currentUser.sendMessage({
+		text,
+		roomId: activeRoom.id,
+	});
+	return messageId;
+}
+
+export function isTyping(roomId) {
+	currentUser.isTypingIn({ roomId });
+}
+
+function disconnectUser() {
+	currentUser.disconnect();
+}
+
 export default {
 	connectUser,
-	subscribeToRoom
+	subscribeToRoom,
+	sendMessage,
+	disconnectUser,
 };

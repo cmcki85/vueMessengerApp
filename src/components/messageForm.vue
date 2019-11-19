@@ -13,42 +13,48 @@
 					id="message-input"
 					type="text"
 					v-model="message"
+					@input="isTyping"
 					placeholder="Enter Message"
 					autocomplete="off"
 					required
 				>
 				</b-form-input>
 			</b-form-group>
-            <div class="clearfix">
-                <b-button type="submit" variant="primary" class="float-right">
-                    Send
-                </b-button>
-            </div>
+			<div class="clearfix">
+				<b-button type="submit" variant="primary" class="float-right">
+					Send
+				</b-button>
+			</div>
 		</b-form>
 	</div>
 </template>
 
 <script>
-import {mapState, mapGetters} from 'vuex';
-
+import { mapActions, mapState, mapGetters } from 'vuex';
+import { isTyping } from '../chatkit.js';
 
 export default {
-    name: 'message-form',
-    data() {
-        return {
-            message: ''
-        }
-    },
-    computed: {
-        ...mapState([
-            'user',
-            'sending',
-            'error',
-            'activeRoom'
-        ]),
-        ...mapGetters([
-            'hasError'
-        ])
-    }    
-}
+	name: 'message-form',
+	data() {
+		return {
+			message: '',
+		};
+	},
+	computed: {
+		...mapState(['user', 'sending', 'error', 'activeRoom']),
+		...mapGetters(['hasError']),
+	},
+	methods: {
+		...mapActions(['sendMessage']),
+		async onSubmit() {
+			const result = await this.sendMessage(this.message);
+			if (result) {
+				this.message = '';
+			}
+		},
+		async isTyping() {
+			await isTyping(this.activeRoom.id);
+		},
+	},
+};
 </script>
