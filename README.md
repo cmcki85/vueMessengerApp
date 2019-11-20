@@ -13,5 +13,5 @@ A simple real-time chat application that allows users to use multiple chat rooms
 
   - @pusher/chatkit-client, a real-time client interface for the ChatKit service
   - moment, a date and time formatting utility
-  -vue-chat-scroll, which scrolls to the bottom automatically when new content is added
-  -vuex-persist, which saves Vuex state in browser’s local storage
+  - vue-chat-scroll, which scrolls to the bottom automatically when new content is added
+  - vuex-persist, which saves Vuex state in browser’s local storage
